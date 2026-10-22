@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Home Floorplan</title>
+<meta name="description" content="An interactive plan and 3D floorplan of a two-storey house, with lights you can switch.">
+<link rel="stylesheet" href="floorplan.css">
+<script type="importmap">
+{ "imports": {
+  "three": "./vendor/three/build/three.module.js",
+  "three/addons/": "./vendor/three/examples/jsm/"
+} }
+</script>
+</head>
+<body>
+<div class="ui" id="load">Loading…</div>
+<div id="overlay"></div>
+
+<header class="ui" id="top">
+  <div class="left">
+    <button class="round" id="menu" aria-label="Open devices and settings" aria-expanded="false" aria-controls="drawer"></button>
+    <div class="clock"><b id="time">--:--</b><span id="date"></span></div>
+  </div>
+</header>
+
+<nav class="ui" id="bar" aria-label="Floorplan controls">
+  <div class="group" role="group" aria-label="Floor">
+    <button id="down" aria-label="Go down a floor"></button>
+    <span id="floorname" aria-live="polite"></span>
+    <button id="up" aria-label="Go up a floor"></button>
+  </div>
+  <div class="seg" role="radiogroup" aria-label="View"><button role="radio" data-view="plan">Plan</button><button role="radio" data-view="iso">3D</button></div>
+  <div class="seg" role="radiogroup" aria-label="Day or night"><button role="radio" data-mode="day">Day</button><button role="radio" data-mode="night">Night</button><button role="radio" data-mode="auto">Auto</button></div>
+</nav>
+
+<aside class="ui" id="drawer" aria-label="Devices and settings" inert>
+  <div class="dh"><b><i></i>Home</b><button class="round" id="close" aria-label="Close"></button></div>
+  <div class="dsec"><h3>All lights</h3><div class="two"><button class="btn" data-all="1">All on</button><button class="btn" data-all="0">All off</button></div></div>
+  <div id="list"></div>
+  <div class="dsec"><h3>Keys</h3><p class="keys">↑ ↓ change floor · V plan or 3D · D this drawer · Esc close</p></div>
+  <div class="dsec"><h3>Glow colour</h3><div class="swatches" id="swatches" role="radiogroup" aria-label="Glow colour"></div></div>
+</aside>
+
+<div class="ui" id="hint"></div>
+<a class="ui" id="credit" href="https://isoglow.dev" target="_blank" rel="noopener">Made with ISO-GLOW ↗</a>
+
+<script src="floorplan.js"></script>
+</body>
+</html>

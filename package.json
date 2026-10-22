@@ -1,0 +1,13 @@
+{
+  "name": "floorplan",
+  "private": true,
+  "description": "Interactive plan and 3D floorplan of a two-storey house, in the iso-glow style.",
+  "homepage": "https://floorplan.trovster.com",
+  "scripts": {
+    "vendor": "rm -rf vendor/three && mkdir -p vendor/three/build vendor/three/examples/jsm/controls vendor/three/examples/jsm/lines && cp node_modules/three/LICENSE vendor/three/ && cp node_modules/three/build/three.module.js vendor/three/build/ && cp node_modules/three/examples/jsm/controls/OrbitControls.js vendor/three/examples/jsm/controls/ && cp node_modules/three/examples/jsm/lines/LineMaterial.js node_modules/three/examples/jsm/lines/LineSegments2.js node_modules/three/examples/jsm/lines/LineSegmentsGeometry.js vendor/three/examples/jsm/lines/",
+    "start": "python3 -m http.server 8000"
+  },
+  "devDependencies": {
+    "three": "0.160.0"
+  }
+}
