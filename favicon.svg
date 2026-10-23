@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title>Floorplan</title>
+  <rect width="64" height="64" rx="14" fill="#101113"/>
+  <path d="M10 29 32 10l22 19v25H10Z" fill="#171a20" stroke="#e9eaea" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M32 11v43M11 39h21M32 29h21M43 29v25" fill="none" stroke="#e9eaea" stroke-width="2" stroke-linecap="round"/>
+  <path d="M24 54V43h8v11M37 22h8v7h-8Z" fill="#e9eaea"/>
+</svg>
