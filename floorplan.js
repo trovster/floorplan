@@ -93,6 +93,7 @@
     { id: 'printer', kind: 'light', name: '3D printer', floor: 1, room: 'office', icon: 'printer' },
     { id: 'amp', kind: 'media', name: 'Amp', floor: 1, room: 'office', icon: 'speaker', text: false },
     { id: 'office-display', kind: 'media', name: 'Office Display', short: 'Display', floor: 1, room: 'office', icon: 'display' },
+    { id: 'fan', kind: 'fan', name: 'Fan', floor: 1, room: 'office', icon: 'fan', align: 'left' },
     { id: 'landing-sensor', kind: 'sensor', name: 'Landing Sensor', floor: 1, room: 'landing', icon: 'sensor' },
   ];
   const DEV = Object.fromEntries(DEVICES.map(d => [d.id, d]));
@@ -115,6 +116,7 @@
     speaker: '<rect x="6" y="3" width="12" height="18" rx="2"/><circle cx="12" cy="14" r="3"/><circle cx="12" cy="7.5" r="1"/>',
     vacuum: '<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="3"/><path d="M12 3.5v3"/>',
     printer: '<path d="M5 4h14v16H5zM5 9h14M10 9v4h4V9M8 20v-3h8v3"/>',
+    fan: '<rect x="8.5" y="2" width="7" height="12" rx="3.5"/><path d="M9 14h6l1 8H8z"/>',
     sensor: '<circle cx="12" cy="12" r="2"/><path d="M7.8 7.8a6 6 0 0 0 0 8.4M16.2 7.8a6 6 0 0 1 0 8.4"/>',
     menu: '<path d="M4 7h16M4 12h16M4 17h16"/>', close: '<path d="M6 6l12 12M18 6L6 18"/>',
     up: '<path d="M6 15l6-6 6 6"/>', down: '<path d="M6 9l6 6 6-6"/>',
@@ -606,6 +608,15 @@
       }
       return { mats: [m], glow: F.glow(pts, .28), pools: [[1355, 1215, 1.8, 1]], light: [1385, 1215, .45, 5], at: [1408, 1208, .76] };
     });
+    // tower fan in the corner by the window: a round base with the loop on top, facing the desk; the loop glows while it runs
+    fixture(F, 'fan', () => {
+      const m = F.lit(), cx = 1388, cy = 1612, w = 11, r = w * S, P = [];
+      cyl(cx, cy, 15, 0, .4, 'body', 13);
+      const arc = (hc, a0) => { for (let i = 0; i <= 8; i++) { const a = a0 + i / 8 * Math.PI; P.push([cx, cy + w * Math.cos(a), hc + r * Math.sin(a)]); } };
+      arc(1 - r, 0); arc(.4 + r, Math.PI); P.push(P[0]);
+      F.tube(P, 2.5, m);
+      return { mats: [m], glow: F.glow([F.v(cx, cy, .7)], .3), at: [cx, cy, 1.06] };
+    });
 
     // children's bedroom (the 10'2" room): bed in the corner, head against the en-suite wall; drawers beside it on that wall; small desk on the office wall
     bed(F, 1671, 965, 1798, 1248, 1, 't');
@@ -646,6 +657,7 @@
       return a.status ? `Light ${t.toLowerCase()} · ${nice(a.status)}${temp}` : t;
     }
     if (dom === 'sensor') return (s.state === 'on' ? 'Motion' : 'Clear') + temp;
+    if (dom === 'fan') return (s.state === 'on' && a.percentage != null ? `${a.percentage}%` : nice(s.state)) + temp;
     if (dom === 'media') return nice(s.state) + (a.media_title ? ` · ${a.media_title}${a.media_artist ? ' – ' + a.media_artist : ''}` : '');
     return nice(s.state);
   }
@@ -688,7 +700,7 @@
     el.innerHTML = `${svg(d.icon)}<span class="t"></span>`;
     el.addEventListener('click', () => toggle(d));
     overlay.append(el); d.chip = el;
-    pins.push({ el, F, at: d.at ? F.v(...d.at) : null, follow: d.vac, chip: true });
+    pins.push({ el, F, at: d.at ? F.v(...d.at) : null, follow: d.vac, chip: true, left: d.align === 'left' });
   }
   const pv = new THREE.Vector3();
   function place() {
@@ -703,7 +715,8 @@
       p.el.style.opacity = p.F.fade;
       shown.push(p);
     }
-    for (const p of shown) { p.w = p.el.offsetWidth; p.h = p.el.offsetHeight; }
+    // a left-aligned chip keeps its icon on the point and grows to the right as its text appears
+    for (const p of shown) { p.w = p.el.offsetWidth; p.h = p.el.offsetHeight; if (p.left) p.x += (p.w - p.h) / 2; }
     // a chip steps below an earlier chip it would cover, and a room label below any chip
     const chips = shown.filter(p => p.chip), hit = (a, b) => Math.abs(a.x - b.x) < (a.w + b.w) / 2 + 2 && Math.abs(a.y - b.y) < (a.h + b.h) / 2 + 2;
     const settle = (p, others) => { for (let n = 0; n < 3; n++) { const c = others.find(c => c !== p && hit(c, p)); if (!c) break; p.y = c.y + (c.h + p.h) / 2 + 4; } };
