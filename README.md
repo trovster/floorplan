@@ -12,6 +12,7 @@ You can view each floor as a flat plan or as an isometric 3D model, and switch t
   - Lit lamps glow and cast a pool of light on their room's floor, and the windows of lit rooms glow at night.
   - The robot vacuum drives round the kitchen when it is started.
   - Doors open and close when clicked.
+- **How it works.** The 3D printer, the robot vacuum and the lava lamp have a cube button in the drawer. It opens a hand-drawn, interactive figure of the real thing in the glow colour, which you can turn round, see inside and play with. On wider screens, arrows either side of it step through the other figures.
 - **Drawer.** The ☰ button or D opens it. It has every device by floor and room, switches for each room, All on / All off, and the glow colour.
 - **Day / Night / Auto.** Day is the light theme and turns the lights off. Night is the dark theme and turns them on. Auto follows the time of day.
 
@@ -23,6 +24,7 @@ You can view each floor as a flat plan or as an isometric 3D model, and switch t
 | `floorplan.js` | Everything else: the house, the furniture, devices, views and interaction |
 | `floorplan.css` | Theme tokens for light and dark, controls, drawer and labels |
 | `vendor/three/` | The parts of [three.js](https://threejs.org) r160 the page uses (MIT licence, included) |
+| `figures/` | The [Colorfigures](https://april-zhu.com/colorfigures) figures: one self-contained HTML file per object |
 | `CNAME` | The custom domain for GitHub Pages |
 
 ### How the house is described
@@ -35,6 +37,10 @@ The data is near the top of `floorplan.js`:
 - `DEVICES` lists the switchable devices and which room each is in.
 
 Heights are in metres. The outside walls are cut at 1.05 m and the inside walls at 0.75 m.
+
+### Figures
+
+Each file in `figures/` is a whole page with nothing to load, so it can be dropped into any site or iframe. The pages have no title or credit of their own: the floorplan's dialog shows the page's title in its header and the Colorfigures credit in its footer, and passes its glow colour.
 
 ### Connecting real devices
 
@@ -73,4 +79,5 @@ GitHub Pages serves the repository's `main` branch as it is, with no build step.
 ## Credits
 
 - Visual style: [ISO-GLOW](https://isoglow.dev).
+- Figures: [Colorfigures](https://april-zhu.com/colorfigures).
 - 3D rendering: [three.js](https://threejs.org), MIT licence.

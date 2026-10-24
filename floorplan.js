@@ -83,17 +83,18 @@
     { id: 'ceiling', kind: 'light', name: 'Ceiling', floor: 0, room: 'lounge', icon: 'bulb' },
     { id: 'tv', kind: 'media', name: 'Living Room TV', short: 'TV', floor: 0, room: 'lounge', icon: 'tv' },
     { id: 'kitchen-display', kind: 'media', name: 'Kitchen Display', short: 'Display', floor: 0, room: 'kitchen', icon: 'display' },
-    { id: 'robovac', kind: 'vacuum', name: 'RoboVac', floor: 0, room: 'kitchen', icon: 'vacuum' },
+    { id: 'robovac', kind: 'vacuum', name: 'RoboVac', floor: 0, room: 'kitchen', icon: 'vacuum', figure: 'figures/eufy-robovac-30c-max.html' },
     { id: 'stair-strip', kind: 'light', name: 'Strip', floor: 0, room: 'hallway', icon: 'strip' },
     { id: 'hallway-sensor', kind: 'sensor', name: 'Hallway Sensor', floor: 0, room: 'hallway', icon: 'sensor' },
     { id: 'garden-lights', kind: 'light', name: 'Back garden', floor: 0, room: 'garden', icon: 'strip' },
     { id: 'bedroom-one', kind: 'light', name: 'Bedroom One', floor: 1, room: 'master', icon: 'lamp' },
     { id: 'bedroom-two', kind: 'light', name: 'Bedroom Two', floor: 1, room: 'master', icon: 'lamp' },
     { id: 'panels', kind: 'light', name: 'Panels', floor: 1, room: 'office', icon: 'hex' },
-    { id: 'printer', kind: 'light', name: '3D printer', floor: 1, room: 'office', icon: 'printer' },
+    { id: 'printer', kind: 'light', name: '3D printer', floor: 1, room: 'office', icon: 'printer', figure: 'figures/bambu-a1.html' },
     { id: 'amp', kind: 'media', name: 'Amp', floor: 1, room: 'office', icon: 'speaker', text: false },
     { id: 'office-display', kind: 'media', name: 'Office Display', short: 'Display', floor: 1, room: 'office', icon: 'display' },
     { id: 'fan', kind: 'fan', name: 'Fan', floor: 1, room: 'office', icon: 'fan', align: 'left' },
+    { id: 'lava-lamp', kind: 'switch', name: 'Lava lamp', floor: 1, room: 'office', icon: 'lava', align: 'left', figure: 'figures/mathmos-telstar.html' },
     { id: 'landing-sensor', kind: 'sensor', name: 'Landing Sensor', floor: 1, room: 'landing', icon: 'sensor' },
   ];
   const DEV = Object.fromEntries(DEVICES.map(d => [d.id, d]));
@@ -117,9 +118,11 @@
     vacuum: '<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="3"/><path d="M12 3.5v3"/>',
     printer: '<path d="M5 4h14v16H5zM5 9h14M10 9v4h4V9M8 20v-3h8v3"/>',
     fan: '<rect x="8.5" y="2" width="7" height="12" rx="3.5"/><path d="M9 14h6l1 8H8z"/>',
+    lava: '<path d="M12 2.5c2.2 2 3.2 4.8 3.2 8.2V16H8.8v-5.3c0-3.4 1-6.2 3.2-8.2z"/><path d="M8.8 12.5 6 20M15.2 12.5 18 20M12 16v5"/>',
     sensor: '<circle cx="12" cy="12" r="2"/><path d="M7.8 7.8a6 6 0 0 0 0 8.4M16.2 7.8a6 6 0 0 1 0 8.4"/>',
+    figure: '<path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M4 7.5l8 4.5 8-4.5M12 12v9"/>',
     menu: '<path d="M4 7h16M4 12h16M4 17h16"/>', close: '<path d="M6 6l12 12M18 6L6 18"/>',
-    up: '<path d="M6 15l6-6 6 6"/>', down: '<path d="M6 9l6 6 6-6"/>',
+    up: '<path d="M6 15l6-6 6 6"/>', down: '<path d="M6 9l6 6 6-6"/>', left: '<path d="M15 6l-6 6 6 6"/>', right: '<path d="M9 6l6 6-6 6"/>',
   };
   const svg = k => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON[k]}</svg>`;
 
@@ -618,6 +621,21 @@
       return { mats: [m], glow: F.glow([F.v(cx, cy, .7)], .3), at: [cx, cy, 1.06] };
     });
 
+    // dresser on the right-hand wall between the panels and the fan, like the living room sideboard but a little lower
+    box(1364, 1280, 1411, 1560, 0, .5); box(1361, 1276, 1411, 1564, .5, .53, 'top');
+    for (const py of [1350, 1420, 1490]) F.seg([[1363.6, py, .03], [1363.6, py, .47]]);
+    // Mathmos Telstar lava lamp on the dresser, on a smart plug in the socket above it: three fins, the base, the glowing bottle, the nose cone
+    fixture(F, 'lava-lamp', () => {
+      const m = F.lit(), cx = 1387, cy = 1500, h0 = .53;
+      for (const a of [0, 120, 240]) { const r = a * Math.PI / 180;
+        F.tube([[cx + 11 * Math.cos(r), cy + 11 * Math.sin(r), h0], [cx + 6 * Math.cos(r), cy + 6 * Math.sin(r), h0 + .1], [cx + 3 * Math.cos(r), cy + 3 * Math.sin(r), h0 + .2]], 1); }
+      cyl(cx, cy, 2, h0 + .08, h0 + .2, 'body', 5);
+      cyl(cx, cy, 5, h0 + .2, h0 + .42, m, 4);
+      cyl(cx, cy, 4, h0 + .42, h0 + .5, 'body', .5);
+      box(1405, 1515, 1411, 1529, .58, .68); F.tube([[1406, 1522, .58], [1400, 1518, h0 + .01], [cx + 4, cy + 6, h0 + .01]], .5);
+      return { mats: [m], glow: F.glow([F.v(cx, cy, h0 + .31)], .3), pools: [[cx, cy, 1.1, .6]], light: [cx, cy, h0 + .3, 2], at: [cx, cy, h0 + .62] };
+    });
+
     // children's bedroom (the 10'2" room): bed in the corner, head against the en-suite wall; drawers beside it on that wall; small desk on the office wall
     bed(F, 1671, 965, 1798, 1248, 1, 't');
     box(1593, 965, 1667, 1017, 0, .7);
@@ -748,6 +766,12 @@
         row.innerHTML = `<span class="ico">${svg(d.icon)}</span><span class="nm"></span>`;
         row.querySelector('.nm').innerHTML = '<span></span><small></small>';
         row.querySelector('.nm span').textContent = d.name;
+        if (d.figure) {
+          const fb = document.createElement('button'); fb.className = 'fig'; fb.type = 'button'; fb.title = 'How it works';
+          fb.setAttribute('aria-label', `How the ${d.name} works`); fb.innerHTML = svg('figure');
+          fb.addEventListener('click', () => showFigure(d));
+          row.append(fb);
+        }
         if (!readonly(d)) {
           const sw = document.createElement('button'); sw.className = 'sw'; sw.type = 'button'; sw.setAttribute('role', 'switch'); sw.setAttribute('aria-label', d.name);
           sw.addEventListener('click', () => toggle(d));
@@ -934,6 +958,16 @@
     $('#menu').setAttribute('aria-expanded', open);
     if (open) $('#close').focus(); else if (dr.contains(document.activeElement)) $('#menu').focus();
   }
+  // a device's Colorfigures page (a self-contained file in figures/), in a dialog, coloured with the glow colour
+  const fig = $('#figure'), FIGS = DEVICES.filter(d => d.figure);
+  let figAt = 0;
+  function showFigure(d) {
+    figAt = FIGS.indexOf(d);
+    fig.querySelector('b').textContent = '';
+    fig.querySelector('iframe').title = d.name;
+    fig.querySelector('iframe').src = `${d.figure}?accent=${accent.getHexString()}`;
+    setDrawer(false); if (!fig.open) fig.showModal();
+  }
 
   // ── header clock ──
   function clock() {
@@ -1020,8 +1054,18 @@
   // ── wiring ──
   $('#menu').innerHTML = svg('menu'); $('#close').innerHTML = svg('close');
   $('#up').innerHTML = svg('up'); $('#down').innerHTML = svg('down');
+  $('#figures').innerHTML = svg('figure'); $('#figures').addEventListener('click', () => showFigure(FIGS[0]));
   $('#menu').addEventListener('click', () => setDrawer(!$('#drawer').classList.contains('open')));
   $('#close').addEventListener('click', () => setDrawer(false));
+  $('#figure-close').innerHTML = svg('close');
+  $('#figure-close').addEventListener('click', () => fig.close());
+  fig.querySelectorAll('.fnav').forEach(b => {
+    const step = +b.dataset.step; b.innerHTML = svg(step < 0 ? 'left' : 'right');
+    b.addEventListener('click', () => showFigure(FIGS[(figAt + step + FIGS.length) % FIGS.length]));
+  });
+  fig.addEventListener('click', e => { if (e.target === fig) fig.close(); });
+  fig.addEventListener('close', () => { fig.querySelector('iframe').src = 'about:blank'; });
+  fig.querySelector('iframe').addEventListener('load', e => { try { fig.querySelector('b').textContent = e.target.contentDocument.title; } catch {} });
   document.addEventListener('pointerdown', e => { if ($('#drawer').classList.contains('open') && !e.target.closest('#drawer, #menu')) setDrawer(false); });
   $('#up').addEventListener('click', () => goFloor(cur + 1));
   $('#down').addEventListener('click', () => goFloor(cur - 1));
@@ -1035,7 +1079,7 @@
   });
   addEventListener('keydown', e => {
     if (e.key === 'Escape') return setDrawer(false);
-    if (e.target.closest('input, textarea, #drawer') || e.metaKey || e.ctrlKey || e.altKey) return;
+    if (fig.open || e.target.closest('input, textarea, #drawer') || e.metaKey || e.ctrlKey || e.altKey) return;
     const k = e.key.toLowerCase();
     if (k === 'arrowup' || k === 'pageup') { goFloor(cur + 1); e.preventDefault(); }
     else if (k === 'arrowdown' || k === 'pagedown') { goFloor(cur - 1); e.preventDefault(); }
